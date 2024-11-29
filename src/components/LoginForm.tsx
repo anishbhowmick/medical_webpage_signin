@@ -34,20 +34,24 @@ export function LoginForm() {
     setIsLoading(true);
     setError(null);
     try {
-      // Mock login - replace with actual API call
-      // In production, this would verify credentials against MongoDB
-      const mockUser = {
-        id: '1',
-        email: data.email,
-        name: data.role === 'doctor' ? 'Dr. Jane Smith' : 'Patient John Doe',
-        role: data.role as UserRole,
-      };
-      const mockToken = 'mock-jwt-token';
-      
-      setAuth(mockUser, mockToken);
-      navigate('/dashboard');
+      const response = await fetch('https://medical-backend-l140.onrender.com/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const { user, token } = await response.json();
+        setAuth(user, token);
+        navigate('/dashboard');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Login failed');
+      }
     } catch (error) {
-      setError('Invalid credentials or role combination');
+      setError('An error occurred during login');
       console.error('Login failed:', error);
     } finally {
       setIsLoading(false);
