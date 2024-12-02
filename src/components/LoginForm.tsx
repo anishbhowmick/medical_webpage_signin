@@ -43,9 +43,11 @@ export function LoginForm() {
       });
 
       if (response.ok) {
-        const { user, token } = await response.json();
+        const { user, token, redirectTo } = await response.json();
         setAuth(user, token);
-        navigate('/dashboard');
+        window.location.href = data.role === 'doctor' 
+          ? 'https://docotr-dashboard.vercel.app/'
+          : 'https://patient-dashboard-pink.vercel.app/';
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Login failed');

@@ -10,7 +10,11 @@ export function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      if (user.role === 'doctor') {
+        window.location.href = 'https://docotr-dashboard.vercel.app/';
+      } else if (user.role === 'patient') {
+        window.location.href = 'https://patient-dashboard-pink.vercel.app/';
+      }
     }
   }, [user, navigate]);
 
